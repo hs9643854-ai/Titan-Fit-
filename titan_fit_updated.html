@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#0b0d0c">
+<title>Titan Fit — Find Your Movement</title>
+<style>
+:root{--bg:#0b0d0c;--panel:#131715;--panel2:#191f1b;--line:#29312b;--text:#f2f5f0;--muted:#a3aea5;--lime:#c8ff52;--lime-dark:#8ebc2d;--danger:#ffb4a8;--radius:22px}
+*{box-sizing:border-box}
+body{margin:0;background:radial-gradient(ellipse at 85% -15%,#24321e 0,transparent 35%),var(--bg);color:var(--text);font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;line-height:1.5}
+button,input{font:inherit}
+button{cursor:pointer}
+a{color:var(--lime)}
+.wrap{width:min(1160px,calc(100% - 32px));margin:auto}
+header{padding:25px 0 16px;display:flex;align-items:center;justify-content:space-between;gap:16px}
+.brand{display:flex;align-items:center;gap:11px;font-weight:900;letter-spacing:.12em}
+.logo{width:42px;height:42px;border-radius:14px;background:var(--lime);color:#10140b;display:grid;place-items:center;font-weight:1000;font-size:22px;box-shadow:0 0 30px #c8ff5220}
+.brand small{display:block;color:var(--muted);font-size:10px;letter-spacing:.22em;font-weight:700;margin-top:-2px}
+.pill{border:1px solid var(--line);border-radius:99px;padding:8px 12px;color:var(--muted);font-size:12px;white-space:nowrap}
+.hero{padding:42px 0 26px;display:grid;grid-template-columns:1.4fr .6fr;gap:24px;align-items:end}
+.eyebrow{color:var(--lime);font-weight:800;font-size:11px;letter-spacing:.2em;text-transform:uppercase}
+h1{font-size:clamp(38px,6vw,68px);line-height:.98;letter-spacing:-.055em;margin:14px 0 18px;max-width:760px}
+h1 span{color:var(--lime)}
+.hero p{color:var(--muted);max-width:620px;margin:0;font-size:15px}
+.hero-stat{border:1px solid var(--line);background:linear-gradient(145deg,#1b241a,#111512);border-radius:var(--radius);padding:22px}
+.stat-number{font-size:38px;font-weight:900;letter-spacing:-.05em;color:var(--lime)}
+.hero-stat p{font-size:12px;margin-top:4px}
+.section-title{display:flex;align-items:end;justify-content:space-between;gap:14px;margin:24px 0 14px}
+.section-title h2{font-size:22px;margin:0;letter-spacing:-.03em}
+.section-title p{margin:4px 0 0;color:var(--muted);font-size:13px}
+.goals{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:10px}
+.goal{background:var(--panel);border:1px solid var(--line);border-radius:17px;padding:15px 12px;text-align:left;color:var(--text);min-height:105px;transition:.2s}
+.goal:hover{transform:translateY(-2px);border-color:#67774b}
+.goal.active{background:var(--lime);color:#10140b;border-color:var(--lime)}
+.goal-icon{font-size:22px;display:block;margin-bottom:10px}
+.goal strong{display:block;font-size:13px}
+.goal small{display:block;font-size:11px;opacity:.7;margin-top:3px}
+.toolbar{display:flex;gap:10px;margin:18px 0 12px;align-items:center}
+.search{width:100%;background:var(--panel);border:1px solid var(--line);border-radius:13px;padding:13px 15px;color:var(--text);outline:none}
+.search:focus{border-color:var(--lime)}
+.result-count{font-size:12px;color:var(--muted);white-space:nowrap}
+.status{margin:12px 0;color:var(--muted);font-size:13px;min-height:20px}
+.cards{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:20px;overflow:hidden;min-width:0;display:flex;flex-direction:column;transition:transform .18s,border-color .18s}
+.card:hover{transform:translateY(-3px);border-color:#65764a}
+.photo{height:180px;background:#e9eee4;position:relative;display:grid;place-items:center;overflow:hidden}
+.photo img{width:100%;height:100%;object-fit:contain;padding:8px;display:block}
+.photo-label{position:absolute;left:11px;top:11px;background:#0b0d0cdd;color:var(--lime);font-size:10px;letter-spacing:.08em;font-weight:800;padding:6px 9px;border-radius:99px;text-transform:uppercase}
+.card-body{padding:15px;display:flex;flex-direction:column;gap:9px;flex:1}
+.card h3{font-size:16px;line-height:1.2;margin:0;letter-spacing:-.02em}
+.desc{font-size:12px;color:var(--muted);margin:0;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+.tags{display:flex;flex-wrap:wrap;gap:6px}
+.tag{font-size:10px;border:1px solid var(--line);border-radius:99px;padding:4px 7px;color:#c5cec5}
+.meta{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:auto}
+.meta div{background:var(--panel2);border-radius:10px;padding:8px}
+.meta small{display:block;color:var(--muted);font-size:9px;text-transform:uppercase;letter-spacing:.08em}
+.meta b{display:block;font-size:11px;margin-top:2px;overflow-wrap:anywhere}
+.actions{display:flex;gap:8px;margin-top:3px}
+.btn{border:1px solid var(--line);background:transparent;color:var(--text);border-radius:11px;padding:9px 10px;font-size:11px;font-weight:800;flex:1}
+.btn.primary{background:var(--lime);color:#10140b;border-color:var(--lime)}
+.btn:hover{filter:brightness(1.08)}
+.empty{grid-column:1/-1;border:1px dashed var(--line);border-radius:18px;padding:32px;text-align:center;color:var(--muted)}
+.note{margin:24px 0 18px;border:1px solid var(--line);background:#111512;border-radius:16px;padding:14px 16px;color:var(--muted);font-size:12px}
+footer{border-top:1px solid var(--line);padding:22px 0 30px;color:var(--muted);font-size:11px;display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}
+dialog{border:1px solid var(--line);border-radius:20px;background:#131715;color:var(--text);padding:0;width:min(650px,calc(100% - 24px));max-height:88vh;overflow:auto}
+dialog::backdrop{background:#000b;backdrop-filter:blur(4px)}
+.modal-head{display:flex;justify-content:space-between;gap:12px;padding:18px 20px;border-bottom:1px solid var(--line)}
+.modal-head h2{font-size:20px;margin:0}
+.close{border:1px solid var(--line);background:transparent;color:var(--text);border-radius:10px;padding:5px 10px}
+.modal-content{padding:20px}
+.modal-content p,.modal-content li{color:#c1cbc2;font-size:13px}
+.modal-content h3{font-size:12px;text-transform:uppercase;letter-spacing:.1em;color:var(--lime)}
+@media(max-width:900px){.cards{grid-template-columns:repeat(3,minmax(0,1fr))}.goals{grid-template-columns:repeat(3,minmax(0,1fr))}.hero{grid-template-columns:1fr .5fr}}
+@media(max-width:650px){.wrap{width:min(100% - 22px,1160px)}header{padding-top:17px}.pill{display:none}.hero{grid-template-columns:1fr;padding-top:30px}.hero-stat{display:flex;align-items:center;gap:15px;padding:14px 17px}.stat-number{font-size:30px}.hero-stat p{margin:0}.goals{grid-template-columns:repeat(2,minmax(0,1fr))}.goal{min-height:88px;padding:12px}.goal:last-child{grid-column:span 2}.cards{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.photo{height:140px}.card-body{padding:11px}.card h3{font-size:14px}.desc{font-size:11px}.meta{grid-template-columns:1fr}.toolbar{align-items:stretch}.result-count{display:none}}
+@media(max-width:380px){.cards{grid-template-columns:1fr}.photo{height:210px}.goal strong{font-size:12px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="brand"><div class="logo">T</div><div>TITAN FIT<small>MOVE WITH PURPOSE</small></div></div>
+    <div class="pill">SIMPLE WORKOUT DISCOVERY</div>
+  </header>
+
+  <section class="hero">
+    <div>
+      <div class="eyebrow">Your movement. Your goals.</div>
+      <h1>Find the workout<br>that fits <span>your day.</span></h1>
+      <p>Choose a goal to explore exercises, learn which muscles they work, and check the equipment and instructions before trying a movement.</p>
+    </div>
+    <div class="hero-stat"><div class="stat-number" id="exerciseTotal">—</div><p>exercise records available<br>from the linked dataset</p></div>
+  </section>
+
+  <section>
+    <div class="section-title"><div><h2>What are you working toward?</h2><p>Pick one goal to see a curated set of exercises.</p></div></div>
+    <div class="goals" id="goals">
+      <button class="goal active" data-goal="bodybuilding"><span class="goal-icon">↗</span><strong>Bodybuilding</strong><small>Strength & muscle</small></button>
+      <button class="goal" data-goal="healthy"><span class="goal-icon">✳</span><strong>Healthy Lifestyle</strong><small>Everyday movement</small></button>
+      <button class="goal" data-goal="weightloss"><span class="goal-icon">⌁</span><strong>Weight Loss</strong><small>Cardio & activity</small></button>
+      <button class="goal" data-goal="vitality"><span class="goal-icon">⚡</span><strong>Vitality Boost</strong><small>Energy & mobility</small></button>
+      <button class="goal" data-goal="football"><span class="goal-icon">⚽</span><strong>Football Player</strong><small>Sport-ready movement</small></button>
+    </div>
+  </section>
+
+  <section>
+    <div class="section-title"><div><h2 id="listTitle">Bodybuilding workouts</h2><p id="listSubtitle">A selection to explore — start with movements you can perform safely.</p></div></div>
+    <div class="toolbar"><input class="search" id="search" type="search" placeholder="Search exercise, muscle, or equipment…" aria-label="Search workouts"><div class="result-count" id="resultCount">Loading…</div></div>
+    <div class="status" id="status" role="status">Loading the exercise library…</div>
+    <div class="cards" id="cards"></div>
+  </section>
+
+  <div class="note"><strong style="color:var(--text)">A quick safety note:</strong> These are exercise ideas, not a personalised training or medical plan. Choose movements suited to your experience, use correct technique, and ask a qualified coach or trusted adult for help if you are unsure. The Weight Loss section focuses on movement ideas, not restrictive eating or promises about results.</div>
+  <footer><span>© Titan Fit · Student microproject</span><span>Exercise data by <a href="https://repdb.co" target="_blank" rel="noopener">RepDB (repdb.co)</a> · <a href="https://github.com/RepDB/exercise-dataset/blob/main/LICENSE-DATA.md" target="_blank" rel="noopener">Dataset licence</a></span></footer>
+</div>
+
+<dialog id="details">
+  <div class="modal-head"><h2 id="modalTitle">Exercise details</h2><button class="close" id="closeModal" aria-label="Close details">✕</button></div>
+  <div class="modal-content" id="modalContent"></div>
+</dialog>
+
+<script>
+const DATA_URL = "https://exercise-dataset.com/exercises.json";
+const IMAGE_BASE = "https://exercise-dataset.com/";
+const GOALS = {
+  bodybuilding: {
+    title: "Bodybuilding workouts",
+    subtitle: "Strength-focused movements for learning about different muscle groups.",
+    terms: ["hypertrophy","bodybuilding","muscle","strength","chest","back","shoulder","biceps","triceps","glute","quadriceps","hamstring","press","curl","row","shrug"]
+  },
+  healthy: {
+    title: "Healthy lifestyle workouts",
+    subtitle: "A varied mix of accessible movements, mobility, balance, and full-body exercise.",
+    terms: ["mobility","stretch","flexibility","full body","bodyweight","balance","posture","beginner","low impact","core","walk","squat","bird dog","plank"]
+  },
+  weightloss: {
+    title: "Weight loss · activity ideas",
+    subtitle: "Explore cardio and whole-body movements as part of a balanced, sustainable lifestyle.",
+    terms: ["cardio","conditioning","endurance","full body","bodyweight","jump","burpee","mountain climber","squat","lunge","high intensity","metabolic","rowing","bike"]
+  },
+  vitality: {
+    title: "Vitality boost workouts",
+    subtitle: "Explore mobility, core stability, flexibility, and whole-body movement.",
+    terms: ["mobility","flexibility","stretch","core","full body","balance","posture","low impact","warm up","bird dog","plank","rotation","lateral walk"]
+  },
+  football: {
+    title: "Football player workouts",
+    subtitle: "Build familiarity with lower-body, core, balance, and power-related movements.",
+    terms: ["football","soccer","agility","plyometric","power","sprint","jump","calf","hamstring","quadriceps","glute","core","unilateral","balance","lunge","lateral","conditioning","endurance"]
+  }
+};
+let allExercises = [];
+let selectedGoal = "bodybuilding";
+let visibleExercises = [];
+const $ = id => document.getElementById(id);
+
+function words(value) {
+  if (Array.isArray(value)) return value.join(" ");
+  if (value && typeof value === "object") return Object.values(value).join(" ");
+  return value == null ? "" : String(value);
+}
+function exerciseText(ex) {
+  return [
+    ex.name_en, ex.description_en, ex.category, ex.force_type, ex.mechanic,
+    ex.difficulty, ex.equipment, ex.body_part, ex.primary_muscles,
+    ex.secondary_muscles, ex.goals, ex.tags, ex.instructions_en
+  ].map(words).join(" ").toLowerCase().replaceAll("_"," ");
+}
+function scoreExercise(ex, goalKey) {
+  const text = exerciseText(ex);
+  const terms = GOALS[goalKey].terms;
+  let score = 0;
+  for (const term of terms) {
+    if (text.includes(term)) score += term.includes(" ") ? 3 : 2;
+  }
+  const difficulty = words(ex.difficulty).toLowerCase();
+  if (difficulty.includes("beginner") || difficulty.includes("easy")) score += 3;
+  if (difficulty.includes("advanced") || difficulty.includes("expert")) score -= 2;
+  if (ex.is_bodyweight === true || words(ex.equipment).toLowerCase().includes("bodyweight")) score += 1;
+  if (goalKey === "football" && (ex.is_unilateral === true || text.includes("single leg"))) score += 2;
+  if (goalKey === "weightloss" && Number(ex.met) >= 6) score += 2;
+  return score;
+}
+function imageUrl(ex, pose = "start") {
+  const imagePath = ex.images?.flat?.[pose] || ex.images?.flat?.main || ex.images?.classic?.[pose];
+  if (imagePath) return new URL(imagePath, IMAGE_BASE).href;
+  return `${IMAGE_BASE}images/flat/${ex.id}-${pose}.webp`;
+}
+function muscleText(ex) {
+  const m = words(ex.primary_muscles || ex.body_part).replaceAll("_"," ");
+  return m ? m.split(/[;,]/).map(s => s.trim()).filter(Boolean).slice(0,3).join(", ") : "See exercise details";
+}
+function equipmentText(ex) {
+  const e = words(ex.equipment).replaceAll("_"," ").trim();
+  return e || "Bodyweight / not listed";
+}
+function difficultyText(ex) {
+  const d = words(ex.difficulty).replaceAll("_"," ").trim();
+  return d ? d.charAt(0).toUpperCase()+d.slice(1) : "Not listed";
+}
+function shortDescription(ex) {
+  const d = words(ex.description_en).trim();
+  return d || `A ${words(ex.category).replaceAll("_"," ") || "strength"} exercise targeting ${muscleText(ex)}.`;
+}
+function makeCards() {
+  const query = $("search").value.trim().toLowerCase();
+  const goal = GOALS[selectedGoal];
+  $("listTitle").textContent = goal.title;
+  $("listSubtitle").textContent = goal.subtitle;
+  const ranked = allExercises
+    .map(ex => ({ex, score: scoreExercise(ex, selectedGoal)}))
+    .filter(item => item.score > 0)
+    .sort((a,b) => b.score - a.score || words(a.ex.name_en).localeCompare(words(b.ex.name_en)));
+  let chosen = ranked.slice(0, 8).map(item => item.ex);
+  if (query) {
+    chosen = allExercises.filter(ex => exerciseText(ex).includes(query))
+      .sort((a,b) => scoreExercise(b, selectedGoal) - scoreExercise(a, selectedGoal)).slice(0, 8);
+  }
+  visibleExercises = chosen;
+  $("resultCount").textContent = `${chosen.length} suggestions`;
+  $("cards").innerHTML = "";
+  if (!chosen.length) {
+    $("cards").innerHTML = '<div class="empty">No matching exercises found. Try another search term.</div>';
+    return;
+  }
+  for (const ex of chosen) {
+    const card = document.createElement("article");
+    card.className = "card";
+    const img = document.createElement("img");
+    img.alt = `${ex.name_en || "Exercise"} illustration`;
+    img.loading = "lazy";
+    img.src = imageUrl(ex, "start");
+    img.onerror = () => {
+      if (!img.dataset.triedPeak) {
+        img.dataset.triedPeak = "1";
+        img.src = imageUrl(ex, "peak");
+      } else {
+        img.onerror = null;
+        img.alt = "Exercise image unavailable";
+        img.style.display = "none";
+        img.parentElement.style.background = "linear-gradient(135deg,#e8eee0,#cdd7c2)";
+      }
+    };
+    const photo = document.createElement("div");
+    photo.className = "photo";
+    photo.appendChild(img);
+    const label = document.createElement("span");
+    label.className = "photo-label";
+    label.textContent = words(ex.body_part).replaceAll("_"," ") || "Exercise";
+    photo.appendChild(label);
+    const body = document.createElement("div");
+    body.className = "card-body";
+    const title = document.createElement("h3");
+    title.textContent = ex.name_en || "Unnamed exercise";
+    const desc = document.createElement("p");
+    desc.className = "desc";
+    desc.textContent = shortDescription(ex);
+    const tags = document.createElement("div");
+    tags.className = "tags";
+    for (const t of [difficultyText(ex), words(ex.category).replaceAll("_"," ")].filter(Boolean).slice(0,2)) {
+      const tag = document.createElement("span");
+      tag.className = "tag";
+      tag.textContent = t;
+      tags.appendChild(tag);
+    }
+    const meta = document.createElement("div");
+    meta.className = "meta";
+    meta.innerHTML = `<div><small>Target muscles</small><b></b></div><div><small>Equipment</small><b></b></div>`;
+    meta.children[0].querySelector("b").textContent = muscleText(ex);
+    meta.children[1].querySelector("b").textContent = equipmentText(ex);
+    const actions = document.createElement("div");
+    actions.className = "actions";
+    const details = document.createElement("button");
+    details.className = "btn primary";
+    details.textContent = "View details";
+    details.addEventListener("click", () => showDetails(ex));
+    const dismiss = document.createElement("button");
+    dismiss.className = "btn";
+    dismiss.textContent = "Skip";
+    dismiss.setAttribute("aria-label", `Skip ${ex.name_en}`);
+    dismiss.addEventListener("click", () => {
+      card.remove();
+      const remaining = $("cards").querySelectorAll(".card").length;
+      $("resultCount").textContent = `${remaining} suggestions`;
+      if (!remaining) $("cards").innerHTML = '<div class="empty">You’ve explored this set. Choose another goal or clear your search to see more.</div>';
+    });
+    actions.append(details,dismiss);
+    body.append(title,desc,tags,meta,actions);
+    card.append(photo,body);
+    $("cards").appendChild(card);
+  }
+}
+function showDetails(ex) {
+  $("modalTitle").textContent = ex.name_en || "Exercise details";
+  const instructions = Array.isArray(ex.instructions_en) ? ex.instructions_en : (typeof ex.instructions_en === "string" ? ex.instructions_en.split(/\n+/).filter(Boolean) : []);
+  const tips = Array.isArray(ex.tips_en) ? ex.tips_en : (typeof ex.tips_en === "string" ? ex.tips_en.split(/\n+/).filter(Boolean) : []);
+  const list = arr => arr.length ? `<ol>${arr.map(s => `<li>${escapeHtml(s)}</li>`).join("")}</ol>` : "<p>No step-by-step instructions are listed for this record.</p>";
+  $("modalContent").innerHTML = `
+    <p>${escapeHtml(shortDescription(ex))}</p>
+    <div class="meta"><div><small>Target muscles</small><b>${escapeHtml(muscleText(ex))}</b></div><div><small>Equipment</small><b>${escapeHtml(equipmentText(ex))}</b></div><div><small>Difficulty</small><b>${escapeHtml(difficultyText(ex))}</b></div><div><small>Movement type</small><b>${escapeHtml(words(ex.force_type).replaceAll("_"," ") || "Not listed")}</b></div></div>
+    <h3>How to do it</h3>${list(instructions)}
+    ${tips.length ? `<h3>Tips</h3>${list(tips)}` : ""}
+    <p><strong>Reminder:</strong> Start gently, use controlled technique, and stop if you feel pain or dizziness. Ask a qualified coach for help with unfamiliar movements.</p>`;
+  $("details").showModal();
+}
+function escapeHtml(value) {
+  return String(value).replace(/[&<>"']/g, ch => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[ch]));
+}
+document.querySelectorAll(".goal").forEach(button => button.addEventListener("click", () => {
+  document.querySelectorAll(".goal").forEach(b => b.classList.toggle("active", b === button));
+  selectedGoal = button.dataset.goal;
+  makeCards();
+}));
+$("search").addEventListener("input", makeCards);
+$("closeModal").addEventListener("click", () => $("details").close());
+$("details").addEventListener("click", e => { if (e.target === $("details")) $("details").close(); });
+
+async function loadExercises() {
+  try {
+    const response = await fetch(DATA_URL, {cache:"force-cache"});
+    if (!response.ok) throw new Error("Dataset request failed");
+    const data = await response.json();
+    allExercises = Array.isArray(data) ? data : (data.exercises || []);
+    if (!allExercises.length) throw new Error("No exercise records found");
+    $("exerciseTotal").textContent = allExercises.length;
+    $("status").textContent = "Library loaded. Choose a goal, search, open details, or skip cards you don’t need.";
+    makeCards();
+  } catch (error) {
+    $("exerciseTotal").textContent = "—";
+    $("status").textContent = "The online exercise library could not load. Open this page through GitHub Pages or a local web server, and check your internet connection.";
+    $("cards").innerHTML = '<div class="empty">Could not load the RepDB exercise library. If this is opened directly as a file, try GitHub Pages or VS Code Live Server instead.</div>';
+    console.error(error);
+  }
+}
+loadExercises();
+</script>
+</body>
+</html>
